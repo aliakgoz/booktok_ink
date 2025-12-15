@@ -3,25 +3,41 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #e3e6e6;
   --foreground: #0f1111;
-  --amazon-blue: #232f3e;
-  --amazon-light-blue: #37475a;
-  --amazon-yellow: #ffd814;
-  --amazon-orange: #ffa41c;
+  --amazon-green: #00453e;
+  --amazon-yellow: #FFD814;
+  --amazon-orange: #e77600;
+  --amazon-dark-gray: #0F1111;
+  --amazon-light-gray: #565959;
   --amazon-link: #007185;
-  --amazon-price: #b12704;
+  --amazon-price: #B12704;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Hide Scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Amazon Format Boxes */
+.format-box-selected {
+  border: 2px solid var(--amazon-orange);
+  background-color: #fef8f2;
+  color: var(--amazon-price);
+}
+
+.format-box-default {
+  border: 1px solid #d5d9d9;
+  background-color: #fff;
 }
