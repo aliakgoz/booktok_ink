@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Book } from "@/lib/types";
-import { ShoppingCart, Heart, Share2 } from "lucide-react";
+import { ShoppingCart, Heart, Share2, Star } from "lucide-react";
 import Image from "next/image";
 
 interface BookCardProps {
@@ -12,91 +12,94 @@ interface BookCardProps {
 
 export const BookCard = ({ book, index }: BookCardProps) => {
     return (
-        <div className="h-[100dvh] w-full shrink-0 snap-start relative bg-black flex flex-col">
+        <div className="h-[100dvh] w-full shrink-0 snap-start relative bg-neutral-950 flex flex-col overflow-hidden">
 
-            {/* 1. Background Layer (Separate) */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
+            {/* 1. Dynamic Background */}
+            <div className="absolute inset-0 z-0">
                 {book.cover_image && (
                     <Image
                         src={book.cover_image}
                         alt="bg"
                         fill
-                        className="object-cover blur-[50px] opacity-30 brightness-[0.3]"
+                        className="object-cover blur-[60px] opacity-20 brightness-[0.4] scale-110"
                         priority={index === 0}
                     />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black" />
+                <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/80 via-transparent to-neutral-950" />
             </div>
 
-            {/* 2. Top Section: Image & Interactions (Flex Grow) */}
-            <div className="relative z-10 flex-1 flex flex-col justify-center items-center w-full px-8 pt-16">
+            {/* 2. Safe Layout Container - Flex Vertical */}
+            <div className="relative z-10 w-full h-full flex flex-col max-w-md mx-auto px-6">
 
-                {/* Book Cover Container with localized shadow */}
-                <motion.div
-                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                    whileInView={{ scale: 1, opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    viewport={{ once: true }}
-                    className="relative w-full max-w-[240px] aspect-[2/3] rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)] border border-white/5"
-                >
-                    {book.cover_image && (
-                        <Image
-                            src={book.cover_image}
-                            alt={book.title}
-                            fill
-                            className="object-cover rounded-xl"
-                            priority={index < 2}
-                        />
-                    )}
-                </motion.div>
+                {/* Header Spacer (approx 80px for search bar) */}
+                <div className="h-24 shrink-0" />
 
-                {/* Right Interaction Sidebar (Absolute to the image area, ensuring right-alignment) */}
-                <div className="absolute right-4 bottom-10 flex flex-col gap-5 items-center">
-                    <div className="flex flex-col items-center gap-1">
-                        <button className="p-3 bg-white/10 backdrop-blur-xl border border-white/5 rounded-full text-white shadow-lg active:scale-90 transition-all">
-                            <Heart size={24} className="stroke-[2px]" />
+                {/* CENTRE: Image & Actions */}
+                <div className="flex-1 flex flex-col items-center justify-center gap-6 min-h-0">
+
+                    {/* Book Cover */}
+                    <motion.div
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        whileInView={{ scale: 1, opacity: 1 }}
+                        viewport={{ once: true }}
+                        className="relative w-auto h-auto max-h-[45vh] aspect-[2/3] rounded-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] ring-1 ring-white/10"
+                    >
+                        {book.cover_image && (
+                            <Image
+                                src={book.cover_image}
+                                alt={book.title}
+                                fill
+                                className="object-cover rounded-xl"
+                                priority={index < 2}
+                            />
+                        )}
+                    </motion.div>
+
+                    {/* Action Row (Below Image - No Overlap) */}
+                    <div className="flex items-center gap-6">
+                        <button className="flex flex-col items-center gap-1 group">
+                            <div className="p-3 bg-white/5 backdrop-blur-md rounded-full border border-white/5 group-active:scale-90 transition-all">
+                                <Heart className="w-6 h-6 text-white/50 group-hover:text-red-500 transition-colors" />
+                            </div>
+                            <span className="text-[10px] text-white/40 font-medium">{book.rating}</span>
                         </button>
-                        <span className="text-[10px] font-bold text-white/80">{book.rating}</span>
+
+                        <button className="flex flex-col items-center gap-1 group">
+                            <div className="p-3 bg-white/5 backdrop-blur-md rounded-full border border-white/5 group-active:scale-90 transition-all">
+                                <Share2 className="w-6 h-6 text-white/50 group-hover:text-blue-500 transition-colors" />
+                            </div>
+                            <span className="text-[10px] text-white/40 font-medium">Share</span>
+                        </button>
                     </div>
 
-                    <button className="p-3 bg-white/10 backdrop-blur-xl border border-white/5 rounded-full text-white shadow-lg active:scale-90 transition-all">
-                        <Share2 size={20} className="stroke-[2px]" />
-                    </button>
                 </div>
-            </div>
 
-            {/* 3. Bottom Section: Details & CTA (Fixed padding) */}
-            <div className="relative z-20 w-full px-6 pb-24 pt-4 bg-gradient-to-t from-black via-black/80 to-transparent">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="space-y-3"
-                >
-                    <h2 className="text-2xl font-bold text-white leading-tight line-clamp-2 drop-shadow-md">
-                        {book.title}
-                    </h2>
-
-                    <p className="text-white/70 font-medium text-sm">
-                        {book.authors?.join(", ")}
-                    </p>
-
-                    <p className="text-white/50 text-xs line-clamp-2 leading-relaxed max-w-[90%]">
-                        {book.description}
-                    </p>
+                {/* BOTTOM: Text & CTA */}
+                <div className="shrink-0 pb-12 pt-6 flex flex-col gap-4">
+                    <div>
+                        <h2 className="text-2xl font-bold text-white leading-tight line-clamp-2">
+                            {book.title}
+                        </h2>
+                        <p className="text-white/60 text-base font-medium mt-1">
+                            {book.authors?.join(", ")}
+                        </p>
+                    </div>
 
                     <a
                         href={book.affiliate_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-6 flex items-center justify-center gap-2 w-full h-[56px] rounded-full bg-[#FF9900] text-black font-bold text-base shadow-[0_0_20px_rgba(255,153,0,0.25)] hover:bg-[#ffad33] active:scale-[0.98] transition-all"
+                        className="flex items-center justify-center gap-2 w-full h-14 rounded-2xl bg-white text-black font-bold text-lg hover:bg-neutral-200 active:scale-95 transition-all"
                     >
-                        <span>Buy on Amazon</span>
-                        <ShoppingCart size={18} strokeWidth={2.5} />
+                        <span>Check Price</span>
+                        <ShoppingCart size={18} />
                     </a>
-                </motion.div>
-            </div>
 
+                    {/* Extra spacing for bottom bar safe area */}
+                    <div className="h-6" />
+                </div>
+
+            </div>
         </div>
     );
 };
