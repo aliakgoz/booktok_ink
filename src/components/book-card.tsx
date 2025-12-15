@@ -36,11 +36,11 @@ export const BookCard = ({ book, index }: BookCardProps) => {
                 <div className="flex items-center gap-1 mt-1">
                     <div className="flex text-[#ffa41c]">
                         {[1, 2, 3, 4, 5].map((s) => (
-                            <Star key={s} size={16} fill="currentColor" strokeWidth={0} className={s > Math.round(parseFloat(book.rating || "0")) ? "text-gray-200" : ""} />
+                            <Star key={s} size={16} fill="currentColor" strokeWidth={0} className={s > Math.round(book.rating || 0) ? "text-gray-200" : ""} />
                         ))}
                     </div>
                     <span className="text-[#007185] text-sm font-medium ml-1 flex items-center gap-1">
-                        {book.rating ? parseFloat(book.rating) * 1245 : "342"}
+                        {book.rating ? Math.round(book.rating * 1245) : "342"}
                         <ChevronRight size={12} />
                     </span>
                 </div>
