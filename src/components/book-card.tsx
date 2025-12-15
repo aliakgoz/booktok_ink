@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Book } from "@/lib/types";
-import { ShoppingCart, Heart, Share2, Star } from "lucide-react";
+import { ShoppingCart, Heart, Share2 } from "lucide-react";
 import Image from "next/image";
 
 interface BookCardProps {
@@ -12,102 +12,91 @@ interface BookCardProps {
 
 export const BookCard = ({ book, index }: BookCardProps) => {
     return (
-        <div className="h-[100dvh] w-full shrink-0 snap-start relative flex items-center justify-center overflow-hidden bg-black">
-            {/* Background Blur Layer */}
-            <div className="absolute inset-0 z-0">
+        <div className="h-[100dvh] w-full shrink-0 snap-start relative bg-black flex flex-col">
+
+            {/* 1. Background Layer (Separate) */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
                 {book.cover_image && (
                     <Image
                         src={book.cover_image}
-                        alt="background"
+                        alt="bg"
                         fill
-                        className="object-cover blur-[40px] opacity-40 scale-125 brightness-[0.4]"
+                        className="object-cover blur-[50px] opacity-30 brightness-[0.3]"
                         priority={index === 0}
                     />
                 )}
-                {/* Stronger gradient at bottom for text readability */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent via-50% to-black/95 to-90%" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black" />
             </div>
 
-            {/* Main Content Container */}
-            <div className="relative z-10 w-full h-full flex flex-col justify-end pb-8 px-4 md:max-w-md md:mx-auto md:justify-center">
+            {/* 2. Top Section: Image & Interactions (Flex Grow) */}
+            <div className="relative z-10 flex-1 flex flex-col justify-center items-center w-full px-8 pt-16">
 
-                {/* Book Cover (Fixed Position) */}
+                {/* Book Cover Container with localized shadow */}
                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    whileInView={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                    whileInView={{ scale: 1, opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: "easeOut" }}
                     viewport={{ once: true }}
-                    className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] max-w-[280px] aspect-[2/3] rounded-lg shadow-2xl shadow-black/80 overflow-hidden border border-white/10"
+                    className="relative w-full max-w-[240px] aspect-[2/3] rounded-xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.8)] border border-white/5"
                 >
-                    {book.cover_image ? (
+                    {book.cover_image && (
                         <Image
                             src={book.cover_image}
                             alt={book.title}
                             fill
-                            className="object-cover"
+                            className="object-cover rounded-xl"
                             priority={index < 2}
                         />
-                    ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-gray-800 text-gray-400">
-                            No Cover
-                        </div>
                     )}
                 </motion.div>
 
-                {/* Right Interaction Bar - Fixed Position relative to container */}
-                <div className="absolute right-4 bottom-[180px] flex flex-col gap-6 items-center z-20">
+                {/* Right Interaction Sidebar (Absolute to the image area, ensuring right-alignment) */}
+                <div className="absolute right-4 bottom-10 flex flex-col gap-5 items-center">
                     <div className="flex flex-col items-center gap-1">
-                        <button className="p-3 bg-white/10 backdrop-blur-md border border-white/10 rounded-full text-white hover:bg-red-500/20 hover:text-red-500 transition-all active:scale-95 shadow-lg">
-                            <Heart size={26} fill="currentColor" className="text-white/20 stroke-white hover:fill-red-500 hover:stroke-red-500 transition-colors" />
+                        <button className="p-3 bg-white/10 backdrop-blur-xl border border-white/5 rounded-full text-white shadow-lg active:scale-90 transition-all">
+                            <Heart size={24} className="stroke-[2px]" />
                         </button>
-                        <span className="text-xs font-bold text-white drop-shadow-md">{book.rating}</span>
+                        <span className="text-[10px] font-bold text-white/80">{book.rating}</span>
                     </div>
 
-                    <button className="p-3 bg-white/10 backdrop-blur-md border border-white/10 rounded-full text-white hover:bg-white/20 transition-all active:scale-95 shadow-lg">
-                        <Share2 size={22} />
+                    <button className="p-3 bg-white/10 backdrop-blur-xl border border-white/5 rounded-full text-white shadow-lg active:scale-90 transition-all">
+                        <Share2 size={20} className="stroke-[2px]" />
                     </button>
                 </div>
+            </div>
 
+            {/* 3. Bottom Section: Details & CTA (Fixed padding) */}
+            <div className="relative z-20 w-full px-6 pb-24 pt-4 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="space-y-3"
+                >
+                    <h2 className="text-2xl font-bold text-white leading-tight line-clamp-2 drop-shadow-md">
+                        {book.title}
+                    </h2>
 
-                {/* Bottom Details & CTA */}
-                <div className="z-10 flex flex-col gap-4 mt-auto">
-                    <motion.div
-                        initial={{ y: 20, opacity: 0 }}
-                        whileInView={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.1 }}
-                        className="space-y-1 pr-16" // pr-16 prevents text from hitting the right icons
-                    >
-                        <h2 className="text-xl font-bold text-white leading-tight line-clamp-2 drop-shadow-lg shadow-black">
-                            {book.title}
-                        </h2>
-                        <p className="text-white/90 font-medium text-base drop-shadow-md">
-                            {book.authors?.join(", ")}
-                        </p>
-                    </motion.div>
+                    <p className="text-white/70 font-medium text-sm">
+                        {book.authors?.join(", ")}
+                    </p>
 
-                    <motion.p
-                        initial={{ y: 20, opacity: 0 }}
-                        whileInView={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-white/70 text-xs line-clamp-2 leading-relaxed max-w-[90%]"
-                    >
+                    <p className="text-white/50 text-xs line-clamp-2 leading-relaxed max-w-[90%]">
                         {book.description}
-                    </motion.p>
+                    </p>
 
-                    <motion.a
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        whileInView={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.3 }}
+                    <a
                         href={book.affiliate_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex items-center justify-center gap-2 w-full rounded-full bg-[#FF9900] hover:bg-[#FFAD33] px-6 py-3.5 text-black font-extrabold text-base shadow-[0_0_20px_rgba(255,153,0,0.3)] transition-all active:scale-95"
+                        className="mt-6 flex items-center justify-center gap-2 w-full h-[56px] rounded-full bg-[#FF9900] text-black font-bold text-base shadow-[0_0_20px_rgba(255,153,0,0.25)] hover:bg-[#ffad33] active:scale-[0.98] transition-all"
                     >
                         <span>Buy on Amazon</span>
-                        <ShoppingCart size={18} className="group-hover:translate-x-1 transition-transform" />
-                    </motion.a>
-                </div>
+                        <ShoppingCart size={18} strokeWidth={2.5} />
+                    </a>
+                </motion.div>
             </div>
+
         </div>
     );
 };

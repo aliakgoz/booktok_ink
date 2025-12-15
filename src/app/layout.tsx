@@ -1,22 +1,22 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata } from "next";
+import { Outfit } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] })
+const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'BookTok.inc | Curated Reads',
-  description: 'The ultimate collection of books trending on BookTok for growth, mindset, and success.',
-}
+  title: "BookTok.inc",
+  description: "Discover your next favorite book.",
+};
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={outfit.className}>{children}</body>
     </html>
-  )
+  );
 }
