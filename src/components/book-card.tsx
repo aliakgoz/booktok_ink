@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Book } from "@/lib/types";
-import { ExternalLink, Star } from "lucide-react";
+import { ExternalLink, Star, Share2, Heart } from "lucide-react";
 import Image from "next/image";
 
 interface BookCardProps {
@@ -12,61 +12,103 @@ interface BookCardProps {
 
 export const BookCard = ({ book, index }: BookCardProps) => {
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: index * 0.05 }}
-            whileHover={{ y: -10 }}
-            className="group request-card relative flex flex-col overflow-hidden rounded-xl bg-white/5 border border-white/10 p-4 hover:border-purple-500/50 hover:bg-white/10 transition-colors duration-300"
-        >
-            <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg shadow-lg">
-                {book.cover_image ? (
+        <div className="h-[100dvh] w-full shrink-0 snap-start relative flex items-center justify-center overflow-hidden bg-black">
+            {/* Background Blur */}
+            <div className="absolute inset-0 z-0">
+                {book.cover_image && (
                     <Image
                         src={book.cover_image}
-                        alt={book.title}
+                        alt="background"
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-cover blur-3xl opacity-30 scale-110"
                     />
-                ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gray-800 text-gray-400">
-                        No Cover
-                    </div>
                 )}
+                <div className="absolute inset-0 bg-black/40" />
+            </div>
 
-                {/* Overlay Gradient on Hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            {/* Main Content */}
+            <div className="relative z-10 w-full max-w-md h-full flex flex-col p-6 pt-20 pb-24">
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full transition-transform duration-300 group-hover:translate-y-0">
-                    <a
+                {/* Book Cover */}
+                <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    viewport={{ once: false }}
+                    className="relative aspect-[2/3] w-full max-h-[60vh] rounded-xl shadow-2xl overflow-hidden self-center mb-auto"
+                >
+                    {book.cover_image ? (
+                        <Image
+                            src={book.cover_image}
+                            alt={book.title}
+                            fill
+                            className="object-cover"
+                            priority={index < 2} // Load first couple images eagerly
+                        />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gray-800 text-gray-400">
+                            No Cover
+                        </div>
+                    )}
+                </motion.div>
+
+                {/* Right Action Bar (TikTok Style) */}
+                <div className="absolute right-4 bottom-32 flex flex-col gap-6 items-center z-20">
+                    <div className="flex flex-col items-center gap-1">
+                        <button className="p-3 bg-gray-800/60 backdrop-blur-md rounded-full text-white hover:bg-red-500/20 hover:text-red-500 transition-colors">
+                            <Heart size={28} fill="currentColor" className="text-transparent stroke-white hover:fill-red-500 hover:stroke-red-500 transition-colors" />
+                        </button>
+                        <span className="text-xs font-medium text-white shadow-black drop-shadow-md">{book.rating}</span>
+                    </div>
+
+                    <button className="p-3 bg-gray-800/60 backdrop-blur-md rounded-full text-white hover:bg-white/20 transition-colors">
+                        <Share2 size={24} />
+                    </button>
+                </div>
+
+
+                {/* Bottom Details Overlay */}
+                <div className="flex flex-col gap-3 mt-4 text-left">
+                    <motion.h2
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="text-2xl font-bold text-white leading-tight line-clamp-2 drop-shadow-lg"
+                    >
+                        {book.title}
+                    </motion.h2>
+
+                    <motion.p
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="text-white/90 font-medium text-lg drop-shadow-md"
+                    >
+                        {book.authors?.join(", ")}
+                    </motion.p>
+
+                    <motion.p
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                        className="text-white/70 text-sm line-clamp-3 drop-shadow-md"
+                    >
+                        {book.description}
+                    </motion.p>
+
+                    <motion.a
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.5 }}
                         href={book.affiliate_link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-bold text-black hover:bg-purple-400 transition-colors"
+                        className="mt-4 w-full flex items-center justify-center gap-2 rounded-full bg-[#EA4335] px-6 py-4 text-white font-bold text-lg shadow-lg hover:bg-[#D33828] active:scale-95 transition-all"
                     >
-                        Get on Amazon <ExternalLink size={16} />
-                    </a>
+                        Get Book <ExternalLink size={20} />
+                    </motion.a>
                 </div>
             </div>
-
-            <div className="mt-4 flex flex-col flex-grow">
-                <h3 className="line-clamp-1 text-lg font-bold text-white" title={book.title}>
-                    {book.title}
-                </h3>
-                <p className="line-clamp-1 text-sm text-gray-400">
-                    {book.authors?.join(", ") || "Unknown Author"}
-                </p>
-
-                <div className="mt-2 flex items-center gap-1 text-yellow-400 text-xs">
-                    <Star size={12} fill="currentColor" />
-                    <span>{book.rating > 0 ? book.rating : "4.5"}</span>
-                    <span className="text-gray-600 ml-1">• {book.page_count > 0 ? `${book.page_count} pages` : "Hardcover"}</span>
-                </div>
-
-                <p className="mt-3 line-clamp-2 text-xs text-gray-500">
-                    {book.description || "A must-read for anyone looking to improve their life and mindset."}
-                </p>
-            </div>
-        </motion.div>
+        </div>
     );
 };
